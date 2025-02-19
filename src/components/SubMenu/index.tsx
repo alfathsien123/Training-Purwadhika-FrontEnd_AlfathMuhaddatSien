@@ -1,95 +1,41 @@
-const SubMenu = () => {
-  return (
-    <>
-        <ul className="menu bg-base-200 rounded-box">
-            <li>
-                <a>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                    Home
-                </a>
-            </li>
-            <li>
-                <a>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                    Supplier Catalogue
-                </a>
-            </li>
-            <li>
-                <a>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                    Order
-                </a>
-            </li>
-            <li>
-                <a>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                    Warehouse
-                </a>
-            </li>
-            <li>
-                <a>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                    Finance
-                </a>
-            </li>
-        </ul>
-    </>
-  )
-}
+'use client'
+import { usePathname } from "next/navigation"
+import { HiOutlineHome } from "react-icons/hi";
+import Link from "next/link";
 
-export default SubMenu
+
+const listMenu = [
+    {href: "/dashboard/", name: "Home", icon: <HiOutlineHome className="text-2xl"/>},
+    {href: "/dashboard/suppliers-catalogue", name: "Suppliers catalogue", icon: <HiOutlineHome className="text-2xl"/>},
+    {href: "/dashboard/order", name: "Order", icon: <HiOutlineHome className="text-2xl"/>},
+    {href: "/dashboard/warehouse", name: "Warehouse", icon: <HiOutlineHome className="text-2xl"/>},
+    {href: "/dashboard/finance", name: "Finance", icon: <HiOutlineHome className="text-2xl"/>},
+    
+    {href: "/auth/register", name: "Register", icon: <HiOutlineHome className="text-2xl"/>},
+]
+
+function SidebarMenu() {
+    const pathName = usePathname()
+    console.log(pathName);
+    return (
+        <section className="px-3 py-2">
+          {/* <h1 className="text-3xl font-bold text-green-500">Logo</h1> */}
+    
+          <div className="flex flex-col overflow-y-auto h-[30vh] gap-2">
+          {
+                listMenu.map((menu, index) => {
+                    return (   
+                        <div key={index} className={`flex items-center gap-2 ${pathName === menu.href? "bg-green-700 text-white" : "text-black"}  p-2 rounded-md`}>
+                            {menu.icon}
+                            <Link href={menu.href} className="text-xl">{menu.name}</Link>
+                        </div>
+                    )
+                })
+            }
+          
+          </div>
+        </section>
+      );
+    }
+    
+    export default SidebarMenu;

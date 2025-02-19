@@ -4,7 +4,7 @@ import SubMenu from "../SubMenu"
 const SideBar = () => {
   return (
     <>
-        <div className="w-[15vw] h-screen bg-[#FEFAE0]">
+        <div className=" h-screen bg-[#FEFAE0]">
             <Image src="/logo.jpg" width={200} height={200} alt="logo"/>
             <div className="p-[20px] mt-[-30px]">
                 <SubMenu />
