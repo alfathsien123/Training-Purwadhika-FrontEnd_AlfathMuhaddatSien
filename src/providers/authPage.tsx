@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import React, { useEffect } from "react"
 
     const rolePageAdmin = ['/dashboard']
-    const rolePageManager = ['/dashboard', "/dashboard/order"]
+    const rolePageManager = ['/dashboard', "/dashboard/order", "/dashboard/order/create"]
 
 export default function AuthPage({children}: Readonly<{children: React.ReactNode;}>){
     const router = useRouter()

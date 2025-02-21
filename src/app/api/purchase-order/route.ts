@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import jwt from 'jsonwebtoken'
 import  {headers} from 'next/headers'
 import prisma from "@/lib/prisma.client";
@@ -14,33 +14,48 @@ export async function POST(req: NextRequest){
         }
         
         const decodedToken: any = jwt.verify(token, `${process.env.NEXT_PUBLIC_JWT_KEY}`)
+
+        console.log(decodedToken);
+        
         
         if (decodedToken.role !== 'MANAGER') throw{
             isShowError: true,
             message: 'Unauthorize user'
         }
 
-        const createdPO = await prisma.purchaseOrder.create({
-            data:{
-                poNumber: 'PO-xxx',
-                company,
-                status: 'DRAFT',
-                total,
-                discount,
-                tax,
-                grandTotal,
-                createdBy: decodedToken.id,
-                modifiedBy: decodedToken.id,
-            }
+        await prisma.$transaction(async(tx)=>{
+            const createdPO = await tx.purchaseOrder.create({
+                data:{
+                    poNumber: 'PO-xxx',
+                    company,
+                    status: 'DRAFT',
+                    total,
+                    discount,
+                    tax,
+                    grandTotal,
+                    createdBy: decodedToken.id,
+                    modifiedBy: decodedToken.id,
+                }
+            })
+    
+            // console.log(poItems);
+            
+    
+            const modifiedPOItems = poItems.map((item : Array<object>)=>{
+                return {...item, poId: createdPO.id}
+            })
+    
+            await tx.purchaseOrderItem.createMany({
+                data: modifiedPOItems
+            })
         })
 
-        const modifiedPOItems = poItems.map((item : Array<object>)=>{
-            return {...item, poId: createdPO.id}
+        return NextResponse.json({
+            message: "Create PO Success"
+        },{
+            status: 201
         })
 
-        await prisma.purchaseOrderItem.createMany({
-            data: modifiedPOItems
-        })
     } catch(err){
         console.log(err);
         
