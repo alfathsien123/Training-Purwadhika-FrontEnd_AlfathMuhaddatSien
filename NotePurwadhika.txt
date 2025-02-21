@@ -1,0 +1,21 @@
+npx create-next-app@latest : sementara no tubo pack
+
+npm run dev
+
+npm install react-icons --save
+
+npm i axios
+
+npm install prisma @prisma/client bcrypt
+
+npx prisma init --datasource-provider postgresql
+
+npx prisma migrate dev --name add_model_user
+
+npm i bcrypt @types/bcrypt
+
+npm i formik yup @types/yup
+
+npm i --save react-toastify
+
+npm i zustand

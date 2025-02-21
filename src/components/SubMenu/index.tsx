@@ -5,7 +5,7 @@ import Link from "next/link";
 
 
 const listMenu = [
-    {href: "/dashboard/", name: "Home", icon: <HiOutlineHome className="text-2xl"/>},
+    {href: "/dashboard", name: "Home", icon: <HiOutlineHome className="text-2xl"/>},
     {href: "/dashboard/suppliers-catalogue", name: "Suppliers catalogue", icon: <HiOutlineHome className="text-2xl"/>},
     {href: "/dashboard/order", name: "Order", icon: <HiOutlineHome className="text-2xl"/>},
     {href: "/dashboard/warehouse", name: "Warehouse", icon: <HiOutlineHome className="text-2xl"/>},
@@ -16,7 +16,7 @@ const listMenu = [
 
 function SidebarMenu() {
     const pathName = usePathname()
-    console.log(pathName);
+    // console.log(pathName);
     return (
         <section className="px-3 py-2">
           {/* <h1 className="text-3xl font-bold text-green-500">Logo</h1> */}

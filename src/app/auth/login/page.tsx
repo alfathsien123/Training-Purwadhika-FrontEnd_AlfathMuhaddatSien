@@ -1,28 +1,56 @@
 'use client'
 import 'daisyui/dist/full.css';
 import { Field, Formik, Form, ErrorMessage } from 'formik';
-import { authRegisterSchema } from '@/features/auth/register/schemas/authRegisterSchema';
+import { authLoginSchema } from '@/features/auth/login/schemas/authLoginSchema';
 import { HiOutlineMail } from 'react-icons/hi';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import { redirect } from 'next/navigation';
+import authStore from '@/zustand/authStore';
 
 const delayTimeout = 1000;
 
-const RegisterPage = () => {
-
-    const handleRegister = async (data: { email: string; name: string; password: string; role: string }) => {
+const LoginPage = () => {
+    const setAuth = authStore((state)=> state.setAuth);
+    
+    function delay(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+    let isSuccessLogin = false;
+    const handleLogin = async (data: { email: string;  password: string;  }) => {
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_URL_API}/auth/register`, data);
+
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_URL_API}/auth/login`, data);
+            setAuth({
+                token: response.data.data.token,
+                email: response.data.data.email,
+                name: response.data.data.name,
+                role: response.data.data.role,
+            })
+            
             toast.success(response.data.message, { autoClose: delayTimeout });
+            isSuccessLogin = true
+
         } catch (error) {
+
+            isSuccessLogin = false
             if (axios.isAxiosError(error)) {
                 toast.error(error.response?.data?.message || "Something went wrong!", { autoClose: delayTimeout });
             } else {
                 toast.error("Something went wrong!", { autoClose: delayTimeout });
             }
+            // console.log((error as {message: string}).message);
+            
+        } finally {
+            // console.log(isSuccessLogin); 
+            
+            if (isSuccessLogin) {
+                await delay(delayTimeout);
+                redirect("/dashboard");
+            }
         }
     };
-
+    
     return (
         <div className="flex justify-center items-center h-screen">
             <ToastContainer />
@@ -30,23 +58,25 @@ const RegisterPage = () => {
                 initialValues={{
                     email: "",
                     password: "",
-                    name: "",
-                    role: "",
                 }}
-                validationSchema={authRegisterSchema}
-                onSubmit={(values, { setSubmitting, resetForm }) => {
-                    handleRegister({
+                validationSchema={authLoginSchema}
+                onSubmit={(values, { 
+                    setSubmitting,
+                    resetForm 
+                }) => {
+                    handleLogin({
                         email: values.email,
-                        name: values.name,
                         password: values.password,
-                        role: values.role,
-                    }).finally(() => setSubmitting(false));
-                    resetForm()
+                    }).finally(() => {setSubmitting(false);});
+                    if (isSuccessLogin) {
+                        resetForm()
+                    }
+                    
                 }}
             >
                 {({ isSubmitting }) => (
                     <Form>
-                        <h2 className="text-2xl mb-4">Register User</h2>
+                        <h2 className="text-2xl mb-4">Login</h2>
                         <div className='w-full'>
                             <div className="mb-4 flex items-center relative input input-bordered gap-2">
                                 <HiOutlineMail />
@@ -60,15 +90,6 @@ const RegisterPage = () => {
                             <ErrorMessage name="email" component={'div'} className='text-red-500' />
                             <div className="mb-4 flex items-center relative">
                                 <Field
-                                    name="name"
-                                    type="text"
-                                    className="input grow input-bordered w-full pl-3 rounded-full"
-                                    placeholder="Name"
-                                />
-                            </div>
-                            <ErrorMessage name="name" component={'div'} className='text-red-500' />
-                            <div className="mb-4 flex items-center relative">
-                                <Field
                                     name="password"
                                     type="password"
                                     className="input grow input-bordered w-full pl-3 rounded-full"
@@ -76,21 +97,9 @@ const RegisterPage = () => {
                                 />
                             </div>
                             <ErrorMessage name="password" component={'div'} className='text-red-500' />
-                            <div className="mb-4 flex items-center relative">
-                                <Field
-                                    as="select"
-                                    name="role"
-                                    className="select select-bordered w-full pl-3 rounded-full"
-                                >
-                                    <option value="">{""}</option>
-                                    <option value="user">User</option>
-                                    <option value="admin">Admin</option>
-                                </Field>
-                            </div>
-                            <ErrorMessage name="role" component={'div'} className='text-red-500' />
                         </div>
                         <button type="submit" className="btn bg-green-700 w-full rounded-full text-white" disabled={isSubmitting}>
-                            {isSubmitting ? 'Submitting...' : 'Register'}
+                            {isSubmitting ? 'Submitting...' : 'Login'}
                         </button>
                     </Form>
                 )}
@@ -99,4 +108,4 @@ const RegisterPage = () => {
     );
 };
 
-export default RegisterPage;
+export default LoginPage;

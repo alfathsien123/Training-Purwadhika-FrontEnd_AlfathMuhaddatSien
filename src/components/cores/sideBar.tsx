@@ -1,7 +1,11 @@
+'use client'
 import Image from "next/image"
 import SubMenu from "../SubMenu"
+import authStore from '@/zustand/authStore';
 
 const SideBar = () => {
+  
+  const {email, name} = authStore((state)=> state)
   return (
     <>
         <div className=" h-screen bg-[#FEFAE0]">
@@ -15,6 +19,11 @@ const SideBar = () => {
                     <div>support@linkzasia.com</div>
                     <div>{`(+62)811-1509-265`}</div>
                 </div>
+            </div>
+            <div className="p-[20px]">
+                Hello, {name}
+                <br></br>
+                {email}
             </div>
         </div>
     </>

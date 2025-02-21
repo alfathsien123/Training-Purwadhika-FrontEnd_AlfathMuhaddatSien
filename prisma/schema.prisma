@@ -32,3 +32,49 @@ enum Role{
   USER
 }
 
+model PurchaseOrder{
+  id  String  @id @default(cuid())
+  poNumber  String
+  company String
+  status  POStatus
+  total Int
+  discount  Int
+  tax Int
+  grandTotal
+
+  purchaseOrderItem PurchaseOrderItem[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem{
+  id  String  @id @default(cuid())
+  itemName  String
+  qty Int
+}
+
+model PurchaseOrderItem{
+  id  String  @id @default(cuid())
+  itemName  String
+  qty Int
+  price Int
+
+  poId  String
+  purchaseOrders  PurchaseOrder @relation(fields: [poId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("purchase_orders_items")  
+}
+
+enum POStatus{
+  DRAFT
+  AWAITING_RESPONSE
+  APPROVED
+}
