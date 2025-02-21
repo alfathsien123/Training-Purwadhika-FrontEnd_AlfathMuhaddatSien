@@ -20,6 +20,10 @@ model User {
   name    String?
   password  String
   role    Role     @default(USER)
+
+  createdPO PurchaseOrder[] @relation("CreatedBy")
+  modifiedPO PurchaseOrder[] @relation("ModifiedBy")
+
   createdAt DateTime  @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
@@ -32,7 +36,7 @@ enum Role{
   USER
 }
 
-model PurchaseOrder{
+model PurchaseOrder {
   id  String  @id @default(cuid())
   poNumber  String
   company String
@@ -40,7 +44,13 @@ model PurchaseOrder{
   total Int
   discount  Int
   tax Int
-  grandTotal
+  grandTotal  Int
+
+  createdBy String
+  createdPOUser User  @relation("CreatedBy", fields: [createdBy], references: [id])
+
+  modifiedBy  String
+  modifiedPOUser User @relation("ModifiedBy", fields: [modifiedBy], references: [id])
 
   purchaseOrderItem PurchaseOrderItem[]
 
@@ -51,13 +61,7 @@ model PurchaseOrder{
   @@map("purchase_orders")
 }
 
-model PurchaseOrderItem{
-  id  String  @id @default(cuid())
-  itemName  String
-  qty Int
-}
-
-model PurchaseOrderItem{
+model PurchaseOrderItem {
   id  String  @id @default(cuid())
   itemName  String
   qty Int
@@ -73,7 +77,7 @@ model PurchaseOrderItem{
   @@map("purchase_orders_items")  
 }
 
-enum POStatus{
+enum POStatus {
   DRAFT
   AWAITING_RESPONSE
   APPROVED
